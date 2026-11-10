@@ -1,12 +1,19 @@
 import "./Login.css"
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
+    const cambiarRuta = useNavigate();
+    const manejarEnvío = (e) => {
+        e.preventDefault();
+        cambiarRuta('/chat');
+    }
+
     return(
         <div className="login">
-            <form className="login">
-                <label for="NombreUsuario">Usuario:</label>
+            <form className="login" onSubmit={manejarEnvío}>
+                <label htmlFor="NombreUsuario">Usuario:</label>
                 <input type="text" id="NombreUsuario" name="NombreUsuario" placeholder="Nombre de usuario"/>
-                <label for="Contraseña">Contraseña:</label>
+                <label htmlFor="Contraseña">Contraseña:</label>
                 <input type="password" id="Contraseña" name="Contraseña" placeholder="Contraseña" />
                 <div className="sign">
                     <input type="submit" id="IniciarSesion" value="Iniciar sesión" />

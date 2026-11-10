@@ -1,0 +1,21 @@
+.chibi {
+    display: inline-flex;
+    margin-top: 10rem;
+    cursor: pointer;
+}
+
+.chibi:hover {
+    animation: saltito 0.3s ease-in-out 1;
+}
+
+@keyframes saltito {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-60px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
