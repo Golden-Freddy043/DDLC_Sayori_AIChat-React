@@ -28,6 +28,23 @@ services:
     depends_on:
       - postgres
 
+  express:
+    build: ./
+    container_name: ddlc_express
+    restart: always
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+    ports:
+      - "3001:3001"
+    networks:
+      - red-bd
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
     driver: local

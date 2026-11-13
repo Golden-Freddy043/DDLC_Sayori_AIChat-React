@@ -1,6 +1,6 @@
 // ----- MÓDULOS -----
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 // ----- INICIAMOS EXPRESS -----
 const app = express();
@@ -17,6 +17,6 @@ app.post("/", (req, res) => {
 });
 
 // ----- INICIAMOS EL SERVIDOR -----
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Escuchando en el puerto " + PORT);
 });
