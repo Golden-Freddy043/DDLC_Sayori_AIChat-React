@@ -1,6 +1,8 @@
 // ----- MÓDULOS -----
 import express from "express";
 import cors from "cors";
+import "dotenv/config";
+import pool from "../postgres/db.js";
 
 // ----- INICIAMOS EXPRESS -----
 const app = express();
@@ -11,9 +13,21 @@ app.use(cors());
 app.use(express.json());
 
 // ----- POST /: DATOS DEL FORMULARIO -----
-app.post("/", (req, res) => {
-  console.log(req.body);
-  res.json({ status: "200 OK", mensaje: "Datos enviados correctamente." });
+app.post("/", async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      "SELECT Usuarios.id, Usuarios.nombreUsuario FROM Usuarios",
+    );
+    console.log("Tabla Usuarios (vacía, DEBUG): ", rows);
+    console.log("Datos introducidos por el usuario (DEBUG): ", req.body);
+    res.json({
+      status: "200 OK",
+      mensaje: "Datos enviados correctamente: ",
+      datos: rows,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Fallo en la consulta: " + err });
+  }
 });
 
 // ----- INICIAMOS EL SERVIDOR -----
