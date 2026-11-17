@@ -20,7 +20,7 @@ function Login() {
     const cambiarRuta = useNavigate();
     const manejarEnvío = (e) => {
         e.preventDefault();
-        const URL = 'http://localhost:3001/'
+        const URL = '/api/login'
         const DATOS = {
             "Nombre": nombreUsuario,
             "Contraseña": contraseña,

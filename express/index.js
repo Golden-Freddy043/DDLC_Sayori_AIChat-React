@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // ----- POST /: DATOS DEL FORMULARIO -----
-app.post("/", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   try {
     const { rows } = await pool.query(
       "SELECT Usuarios.id, Usuarios.nombreUsuario FROM Usuarios",
