@@ -20,10 +20,15 @@ function Login() {
     const cambiarRuta = useNavigate();
     const manejarEnvío = (e) => {
         e.preventDefault();
+
+        const submitter = e.nativeEvent.submitter;
+        const acción = submitter?.value ?? "undefined";
+
         const URL = '/api/login'
         const DATOS = {
             "Nombre": nombreUsuario,
             "Contraseña": contraseña,
+            "TipoDeAcción": acción
         }
         if (DATOS.Nombre === "" || DATOS.Contraseña === "") {
             alert("Error: Los campos no pueden estar vacíos.");
