@@ -10,7 +10,8 @@ async function enviarDatos(URL = '', DATOS = {}) {
             'Content-Type': 'application/json'
         }
     });
-    return respuesta.json()
+    const data = await respuesta.json();
+    return { status: respuesta.status, data };
 }
 
 function Login() {
@@ -18,26 +19,45 @@ function Login() {
     const [ contraseña, setContraseña ] = useState("");
 
     const cambiarRuta = useNavigate();
-    const manejarEnvío = (e) => {
+    const manejarEnvío = async (e) => {
         e.preventDefault();
 
         const submitter = e.nativeEvent.submitter;
         const acción = submitter?.value ?? "undefined";
+        let URL = '';
 
-        const URL = '/api/login'
+        if (acción === "Iniciar sesión") {
+            URL = '/api/login';
+        } else if (acción === "Registrarse") {
+            URL = '/api/register';
+        }
+
         const DATOS = {
             "Nombre": nombreUsuario,
-            "Contraseña": contraseña,
-            "TipoDeAcción": acción
+            "Contraseña": contraseña
         }
         if (DATOS.Nombre === "" || DATOS.Contraseña === "") {
             alert("Error: Los campos no pueden estar vacíos.");
         } else {
-            enviarDatos(URL, DATOS)
-            .then(DATOS => {
-                console.log(DATOS);
-            });
-            cambiarRuta('/chat');
+            const { status, data } = await enviarDatos(URL, DATOS);
+            switch (status) {
+                case 200:
+                    cambiarRuta('/chat');
+                    alert(data.mensaje);
+                    break;
+                case 201:
+                    // PENDIENTE: Mostrar mensaje en verde de que el usuario se creó exitosamente.
+                    alert(data.mensaje);
+                    break;
+                case 401:
+                case 409:
+                case 500:
+                    // PENDIENTE: Mostrar mensaje en rojo con el error correspondiente.
+                    alert(data.error);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

@@ -17,65 +17,71 @@ app.use(cors());
 app.use(express.json());
 
 // ----- POST /: DATOS DEL FORMULARIO -----
+// --- LOGIN ---
 app.post("/api/login", async (req, res) => {
   try {
     const nombreUsuario = req.body.Nombre;
     const contraseñaUsuario = req.body.Contraseña;
-    const acción = req.body.TipoDeAcción;
-    let consulta;
-    let params = [];
+    let consulta =
+      "SELECT usuarios.* FROM usuarios WHERE usuarios.nombre_usuario = $1";
+    let params = [nombreUsuario];
 
-    if (acción === "Iniciar sesión") {
-      consulta =
-        "SELECT usuarios.* FROM usuarios WHERE usuarios.nombreusuario = $1";
-      params = [nombreUsuario];
+    const { rows } = await pool.query(consulta, params);
 
-      const { rows } = await pool.query(consulta, params);
-
-      const usuario = rows[0];
-      if (!usuario) {
-        return res.status(401).json({ error: "El usuario no existe" });
-      }
-
-      const contraseñaValida = await bcrypt.compare(
-        contraseñaUsuario,
-        usuario.contraseñaUsuario,
-      );
-      if (!contraseñaValida) {
-        return res.status(401).json({ error: "Contraseña incorrecta" });
-      }
-
-      // DEBUG
-      console.log("Tabla Usuarios (DEBUG): ", rows);
-      console.log("Datos introducidos por el usuario (DEBUG): ", req.body);
-
-      return res.status(200).json({
-        mensaje: "Sesión iniciada correctamente",
-        datos: rows[0],
-      });
-    } else if (acción === "Registrarse") {
-      const hashContraseña = await bcrypt.hash(contraseñaUsuario, SALT_ROUNDS);
-
-      consulta =
-        "INSERT INTO usuarios (nombreusuario, contraseñausuario) VALUES ($1, $2) RETURNING usuarios.*";
-      params = [nombreUsuario, hashContraseña];
-
-      const { rows } = await pool.query(consulta, params);
-
-      // DEBUG
-      console.log("Tabla Usuarios (DEBUG): ", rows);
-      console.log("Datos introducidos por el usuario (DEBUG): ", req.body);
-
-      return res.status(201).json({
-        mensaje: "Usuario registrado correctamente",
-        datos: rows[0],
-      });
-    } else {
-      console.log("Acción no válida");
-      return res.status(400).json({ error: "Acción no válida" });
+    const usuario = rows[0];
+    if (!usuario) {
+      return res.status(401).json({ error: "El usuario no existe" });
     }
+
+    const contraseñaValida = await bcrypt.compare(
+      contraseñaUsuario,
+      usuario.contraseña_usuario,
+    );
+    if (!contraseñaValida) {
+      return res.status(401).json({ error: "Contraseña incorrecta" });
+    }
+
+    // DEBUG
+    console.log("Tabla Usuarios (DEBUG): ", rows);
+    console.log("Datos introducidos por el usuario (DEBUG): ", req.body);
+
+    return res.status(200).json({
+      mensaje: "Sesión iniciada correctamente",
+    });
   } catch (err) {
-    res.status(500).json({ error: "Fallo en la consulta: " + err });
+    return res.status(500).json({ error: "Fallo en la consulta: " + err });
+  }
+});
+
+// --- REGISTRO ---
+app.post("/api/register", async (req, res) => {
+  try {
+    const nombreUsuario = req.body.Nombre;
+    const contraseñaUsuario = req.body.Contraseña;
+    const hashContraseña = await bcrypt.hash(contraseñaUsuario, SALT_ROUNDS);
+    let consulta =
+      "INSERT INTO usuarios (nombre_usuario, contraseña_usuario) VALUES ($1, $2) RETURNING usuarios.*";
+    let params = [nombreUsuario, hashContraseña];
+
+    const { rows } = await pool.query(consulta, params);
+
+    // DEBUG
+    console.log("Tabla Usuarios (DEBUG): ", rows);
+    console.log("Datos introducidos por el usuario (DEBUG): ", req.body);
+
+    return res.status(201).json({
+      mensaje: "Usuario registrado correctamente",
+    });
+  } catch (err) {
+    if (err.code === "23505") {
+      // DEBUG
+      console.log("Ya existe un usuario con ese nombre");
+      return res
+        .status(409)
+        .json({ error: "Ya existe un usuario con ese nombre" });
+    } else {
+      return res.status(500).json({ error: "Fallo en la consulta: " + err });
+    }
   }
 });
 
