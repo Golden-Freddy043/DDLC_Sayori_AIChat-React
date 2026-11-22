@@ -21,6 +21,16 @@ input[type="submit"] {
     width: 7rem;
 }
 
+#mensaje {
+    background-color: green;
+    padding: 15px;
+}
+
+#error {
+    background-color: red;
+    padding: 15px;
+}
+
 @media (max-width: 767px) {
     .login {
         padding: 5%;

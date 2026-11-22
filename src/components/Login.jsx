@@ -18,6 +18,9 @@ function Login() {
     const [ nombreUsuario, setNombreUsuario ] = useState("");
     const [ contraseña, setContraseña ] = useState("");
 
+    const [ mensaje, setMensaje ] = useState("");
+    const [ error, setError ] = useState("");
+
     const cambiarRuta = useNavigate();
     const manejarEnvío = async (e) => {
         e.preventDefault();
@@ -37,23 +40,26 @@ function Login() {
             "Contraseña": contraseña
         }
         if (DATOS.Nombre === "" || DATOS.Contraseña === "") {
-            alert("Error: Los campos no pueden estar vacíos.");
+            setError("Los campos no pueden estar vacíos");
         } else {
             const { status, data } = await enviarDatos(URL, DATOS);
             switch (status) {
                 case 200:
-                    cambiarRuta('/chat');
-                    alert(data.mensaje);
+                    setError("");
+                    setMensaje(data.mensaje);
+                    setTimeout(() => {
+                        cambiarRuta('/chat')
+                    }, 1500);
                     break;
                 case 201:
-                    // PENDIENTE: Mostrar mensaje en verde de que el usuario se creó exitosamente.
-                    alert(data.mensaje);
+                    setError("");
+                    setMensaje(data.mensaje);
                     break;
                 case 401:
                 case 409:
                 case 500:
-                    // PENDIENTE: Mostrar mensaje en rojo con el error correspondiente.
-                    alert(data.error);
+                    setMensaje("");
+                    setError(data.error);
                     break;
                 default:
                     break;
@@ -63,6 +69,8 @@ function Login() {
 
     return(
         <div className="login">
+            {mensaje && <p id="mensaje">{mensaje}</p>}
+            {error && <p id="error">{error}</p>}
             <form className="login" onSubmit={manejarEnvío}>
                 <label htmlFor="NombreUsuario">Usuario:</label>
                 <input type="text" id="NombreUsuario" name="NombreUsuario" placeholder="Nombre de usuario" value={nombreUsuario} onChange={e => setNombreUsuario(e.target.value)} />
