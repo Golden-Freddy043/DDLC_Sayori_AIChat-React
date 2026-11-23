@@ -1,0 +1,26 @@
+.textbox {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    width: min(1000px, 92vw);
+    min-height: 180px;
+    padding: 28px 36px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background: url("../assets/DDLC-textbox.png") center / 100% 100% no-repeat;
+    box-sizing: border-box;
+    z-index: 2;
+}
+
+.textbox #respuestaIA {
+    margin: 0;
+    font-size: larger;
+    color: white;
+    text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}

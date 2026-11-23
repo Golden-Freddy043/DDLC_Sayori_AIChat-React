@@ -1,10 +1,17 @@
+// ----- ESTILOS -----
 import "./Chat.css"
+
+// ----- COMPONENTES -----
+import InputArea from "../components/InputArea";
+import Sayori from "../components/Sayori"
+import TextBox from "../components/TextBox";
 
 function Chat() {
     return(
         <div className="chat">
-            {/* ----- TEST ----- */}
-            <h1 id="chatTitle">&#10004; Inicio de sesión exitoso</h1>
+            <InputArea />
+            <Sayori />
+            <TextBox />
         </div>
     )
 }

@@ -1,0 +1,30 @@
+.inputArea {
+    position: fixed;
+    left: 50%;
+    top: 24px;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.inputArea textarea {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 5dvh;
+    max-height: 920px;
+    width: 50dvh;
+    max-width: 95vw;
+    object-fit: contain;
+}
+
+.inputArea #enviarConsulta {
+    color: black;
+    background-color: white;
+    height: 5dvh;
+    max-height: 920px;
+    width: 15dvh;
+    max-width: 95vw;
+    object-fit: contain;
+}
+
+.inputArea #enviarConsulta:hover {
+    background-color: lightgray;
+}
